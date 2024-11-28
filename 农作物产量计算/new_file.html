@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农作物亩产计算器</title>
+    <style>
+        * {
+            margin:0px;
+            padding:0px;
+            font-size:16px;
+            line-height:50px;
+        }
+        #box {
+            width: 500px;
+            background-color: lightgray;
+            margin: 50px auto;
+        }
+        h1 {
+            font: bold 28px 黑体;
+            text-align: center;
+            background-color: gray;
+            color: white;
+            padding: 30px;
+        }
+        #content {
+            padding: 30px;
+        }
+        #cropbox {
+            margin-bottom: 20px;
+        }
+        #crop {
+            width: 80px;
+            height: 30px;
+			margin-left: 58px;
+        }
+        .textbox {
+            width: 230px;
+            height: 30px;
+			float: right;
+        }
+        #ok {
+            width: 180px;
+            height: 35px;
+        }
+        #result {
+            border-top:2px solid gray;
+            margin-top:30px;
+            line-height:35px;
+            padding-top:30px;
+        }
+		#variation{
+					width:440px;
+				}
+        #variation > div {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <h1>农作物亩产计算器</h1>
+        <div id="content">
+            <div id="cropbox">
+                <label for="crop">请选择农作物种类：</label>
+                <select id="crop" onchange="choice()">
+                    <option value="null">请选择</option>
+                    <option value="rice">水稻</option>
+                    <option value="millet">谷子</option>
+                    <option value="potato">甘薯</option>
+                    <option value="cotton">棉花</option>
+                </select>
+            </div>
+            <div id="variation">
+					<div id="box1">
+						亩穗数：<input type="text" class="textbox" id="mss1"/><br />
+						穗粒数：<input type="text" class="textbox" id="sls"/><br />
+						斤粒数：<input type="text" class="textbox" id="jls"/>
+					</div>
+					<div id="box2">
+						亩穗数：<input type="text" class="textbox" id="mss2"/><br />
+						穗粒重（克）：<input type="text" class="textbox" id="slz"/><br />
+					</div>
+					<div id="box3">
+						亩株数：<input type="text" class="textbox" id="mzs1"/><br />
+						单株平均薯重（斤）：<input type="text" class="textbox" id="dzsz"/><br />
+					</div>
+					<div id="box4">
+						亩株数：<input type="text" class="textbox" id="mzs2"/><br />
+						单株有效铃数（斤）：<input type="text" class="textbox" id="dzlz"/><br />
+						单克重（克）：<input type="text" class="textbox" id="dlz"/>
+					</div>
+				</div>
+            </div>
+            <div id="result">
+                <button id="ok" onclick="compute()">计算亩产量 (斤)</button>
+                <input type="text" class="textbox" id="mcl" readonly>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function choice() {
+            const crop = document.getElementById("crop").value;
+            const boxes = document.querySelectorAll("#variation > div");
+            boxes.forEach(box => box.style.display = "none");
+
+            if (crop === "rice") {
+                document.getElementById("box1").style.display = "block";
+            } else if (crop === "millet") {
+                document.getElementById("box2").style.display = "block";
+            } else if (crop === "potato") {
+                document.getElementById("box3").style.display = "block";
+            } else if (crop === "cotton") {
+                document.getElementById("box4").style.display = "block";
+            }
+        }
+
+        function compute() {
+            const crop = document.getElementById("crop").value;
+            let result = 0;
+
+            if (crop === "rice") {
+                const mss = Number(document.getElementById("mss1").value);
+                const sls = Number(document.getElementById("sls").value);
+                const jls = Number(document.getElementById("jls").value);
+                if (!mss || !sls || !jls) {
+                    alert("请输入水稻的所有参数！");
+                    return;
+                }
+                result = (mss * sls) / jls;
+
+            } else if (crop === "millet") {
+                const mss = Number(document.getElementById("mss2").value);
+                const slz = Number(document.getElementById("slz").value);
+                if (!mss || !slz) {
+                    alert("请输入谷子的所有参数！");
+                    return;
+                }
+                result = mss * (slz / 1000);
+
+            } else if (crop === "potato") {
+                const mzs = Number(document.getElementById("mzs1").value);
+                const dzsz = Number(document.getElementById("dzsz").value);
+                if (!mzs || !dzsz) {
+                    alert("请输入甘薯的所有参数！");
+                    return;
+                }
+                result = mzs * dzsz;
+
+            } else if (crop === "cotton") {
+                const mzs = Number(document.getElementById("mzs2").value);
+                const dzlz = Number(document.getElementById("dzlz").value);
+                const dlz = Number(document.getElementById("dlz").value);
+                if (!mzs || !dzlz || !dlz) {
+                    alert("请输入棉花的所有参数！");
+                    return;
+                }
+                result = mzs * dzlz * (dlz / 1000);
+            } else {
+                alert("请选择一种农作物！");
+                return;
+            }
+
+            document.getElementById("mcl").value = result.toFixed(2) + " 斤";
+        }
+    </script>
+</body>
+</html>
